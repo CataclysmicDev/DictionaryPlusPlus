@@ -27,6 +27,10 @@ SOFTWARE.
 
 local betterDictionary = setmetatable({}, {
     __call = function(_, dictionary)
+        --(When using the word self I mean to say the current dictionary)
+        --(k/v = key/value)
+
+        --Loops through all of self and returns the first value which key is equal to the "key" argument passed.
         function dictionary:get(key)
             local function loop(_table)
                 for k, v in pairs(_table) do
@@ -48,6 +52,7 @@ local betterDictionary = setmetatable({}, {
             return value
         end
 
+        --Loops through all of self and returns the first key which value is equal to the "value" argument passed.
         function dictionary:getKeyFromValue(value)
             local function loop(_table)
                 for k, v in pairs(_table) do
@@ -69,6 +74,7 @@ local betterDictionary = setmetatable({}, {
             return value
         end
 
+        --Loops through every single key/value inside of self
         function dictionary:descend()
             local function loop(_table)
                 for k, v in pairs(_table) do
@@ -82,22 +88,25 @@ local betterDictionary = setmetatable({}, {
             return loop(self)
         end
 
+        --Adds a new key with a value(key/value are inputs)
         function dictionary:add(key, value)
             self[key] = value
-            return self
         end
 
+        --Removes the given key
         function dictionary:remove(key)
             self[key] = nil
             return self
         end
 
+        --Erases self and returns empty dictionary({})
         function dictionary:wipe()
             for k, _ in pairs(self) do
                 self[k] = nil
             end
         end
 
+        --Returns an array which elements are equal to the keys of every single element in self
         function dictionary:convertKeys()
             local array = {}
             local function descendDown(_table)
@@ -115,6 +124,7 @@ local betterDictionary = setmetatable({}, {
             return array
         end
 
+        --Returns an array which elements are equal to the values of every single element in self
         function dictionary:convertValues()
             local array = {}
             local function descendDown(_table)
@@ -133,6 +143,7 @@ local betterDictionary = setmetatable({}, {
             return array
         end
 
+        --Returns self
         function dictionary:replicate()
             return self
         end
