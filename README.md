@@ -21,6 +21,7 @@ Issue? [File it on GitHub](https://github.com/CataclysmicDev/DictionaryPlusPlus/
 
 #
 It's documented: [Documentation](https://devforum.roblox.com/t/manage-dictionaries-better-with-dictionarymodule-system/2028076)
+
 It's open source: [Download](https://www.roblox.com/library/11323518192/Dictionary)
 
 #
