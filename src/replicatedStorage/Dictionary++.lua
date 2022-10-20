@@ -25,13 +25,19 @@ SOFTWARE.
 
 --Version: 1.0.0
 
-local betterDictionary = setmetatable({}, {
-    __call = function(_, dictionary)
+local dictionaryPlusPlus = setmetatable({}, {
+    __call = function(_, elements)
         --(When using the word self I mean to say the current dictionary)
         --(k/v = key/value)
+        local dictionary = {
+            UserCreated = elements
+        }
 
-        --Loops through all of self and returns the first value which key is equal to the "key" argument passed.
+        --Loops through all of self and returns "v" where v is equal to the value of the key passed
         function dictionary:get(key)
+            local dictionariesToLoop = {}
+            local dic = 0
+
             local function loop(_table)
                 for k, v in pairs(_table) do
                     if k:upper() == key:upper() then
@@ -39,12 +45,18 @@ local betterDictionary = setmetatable({}, {
                     end
 
                     if typeof(v) == "table" then
-                        return loop(v)
+                        table.insert(dictionariesToLoop, v)
                     end
+                end
+
+                dic += 1
+
+                if #dictionariesToLoop > 0 then
+                    return loop(dictionariesToLoop[dic])
                 end
             end
 
-            local value = loop(self)
+            local value = loop(self.UserCreated)
             if value == nil then
                 error("There was an error fetching key \""..key.."\"!")
             end
@@ -52,57 +64,57 @@ local betterDictionary = setmetatable({}, {
             return value
         end
 
-        --Loops through all of self and returns the first key which value is equal to the "value" argument passed.
-        function dictionary:getKeyFromValue(value)
+        --Loops through every single value inside of self
+        function dictionary:descendValues()
+            local list = {}
             local function loop(_table)
-                for k, v in pairs(_table) do
-                    if v == value then
-                        return k
-                    end
-                    
+                for _, v in pairs(_table) do
                     if typeof(v) == "table" then
-                        return loop(v)
+                        loop(v)
+                        continue
                     end
+
+                    table.insert(list, v)
                 end
             end
 
-            local value = loop(self)
-            if value == nil then
-                error("There was an error fetching value \""..value.."\"!")
-            end
-            
-            return value
+            loop(self.UserCreated)
+            return list
         end
 
-        --Loops through every single key/value inside of self
-        function dictionary:descend()
+        --Loops through every single key inside of self
+        function dictionary:descendKeys()
+            local list = {}
             local function loop(_table)
                 for k, v in pairs(_table) do
                     if typeof(v) == "table" then
                         loop(v)
-                        return {k, v}
+                        continue
                     end
+
+                    table.insert(list, k)
                 end
             end
 
-            return loop(self)
+            loop(self.UserCreated)
+            return list
         end
 
         --Adds a new key with a value(key/value are inputs)
         function dictionary:add(key, value)
-            self[key] = value
+            self.UserCreated[key] = value
         end
 
         --Removes the given key
         function dictionary:remove(key)
-            self[key] = nil
+            self.UserCreated[key] = nil
             return self
         end
 
         --Erases self and returns empty dictionary({})
         function dictionary:wipe()
             for k, _ in pairs(self) do
-                self[k] = nil
+                self.UserCreated[k] = nil
             end
         end
 
@@ -120,7 +132,7 @@ local betterDictionary = setmetatable({}, {
                 end 
             end
 
-            descendDown(self)
+            descendDown(self.UserCreated)
             return array
         end
 
@@ -138,18 +150,42 @@ local betterDictionary = setmetatable({}, {
                 end 
             end
 
-            descendDown(self)
+            descendDown(self.UserCreated)
 
             return array
         end
 
-        --Returns self
-        function dictionary:replicate()
+        --Returns the count of the elements created
+        function dictionary:count()
+            local elements = 0
+            local function loop(_table)
+                for _, v in pairs(_table) do
+                    elements += 1
+
+                    if typeof(v) == "table" then
+                        loop(v)
+                        continue
+                    end
+                end
+            end
+
+            loop(self.UserCreated)
+
+            return elements
+        end
+
+        --Returns everything in self
+        function dictionary:replicateEverything()
             return self
+        end
+
+        --Returns user content in self
+        function dictionary:replicateCreated()
+            return self.UserCreated
         end
 
         return dictionary
     end
 })
 
-return betterDictionary
+return dictionaryPlusPlus
